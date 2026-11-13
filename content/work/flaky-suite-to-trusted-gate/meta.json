@@ -1,0 +1,27 @@
+{
+  "slug": "flaky-suite-to-trusted-gate",
+  "title": "From flaky suite to trusted merge gate",
+  "claim": "Made a red build mean a real bug again.",
+  "summary": "Took an end-to-end suite the team reran by habit and turned it into a required check: measured flakiness, quarantined offenders, fixed root causes and cut runtime with sharding.",
+  "status": "draft",
+  "order": 2,
+  "featured": true,
+  "angle": "Reliability and CI",
+  "context": {
+    "company": "Consumer web app (anonymized)",
+    "team": "Platform squad, 6 engineers",
+    "role": "QA engineer; owned suite reliability and CI integration",
+    "timeframe": "3 months"
+  },
+  "stack": ["Playwright", "GitHub Actions", "TypeScript", "Allure"],
+  "metrics": [
+    { "label": "Flaky-test rate", "before": 11, "after": 0.8, "unit": "%", "better": "lower", "note": "Share of runs with at least one retry-pass, 30-day window" },
+    { "label": "Suite runtime in CI", "before": 38, "after": 9, "unit": "min", "better": "lower" },
+    { "label": "Failures that were real bugs", "before": 35, "after": 92, "unit": "%", "better": "higher" }
+  ],
+  "links": {
+    "unavailableReason": "The original suite is proprietary. The same reliability practices run publicly in this site's own suite — see the Quality page."
+  },
+  "credits": "Placeholder: name the platform engineers who paired on the root-cause fixes.",
+  "updated": "2026-11-12"
+}

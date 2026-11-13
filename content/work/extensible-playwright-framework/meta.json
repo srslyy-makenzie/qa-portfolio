@@ -1,0 +1,27 @@
+{
+  "slug": "extensible-playwright-framework",
+  "title": "A Playwright framework the whole team could extend",
+  "claim": "Built a framework developers added tests to without asking QA how.",
+  "summary": "Replaced a brittle, QA-only UI suite with a layered Playwright + TypeScript framework: fixtures, API-seeded test data and role-based locators, so developers wrote tests in their own PRs.",
+  "status": "draft",
+  "order": 1,
+  "featured": true,
+  "angle": "Framework architecture",
+  "context": {
+    "company": "B2B SaaS product (anonymized)",
+    "team": "2 QA engineers, 9 developers across 2 squads",
+    "role": "QA engineer; framework design and rollout",
+    "timeframe": "6 months"
+  },
+  "stack": ["Playwright", "TypeScript", "REST API", "GitHub Actions", "Docker"],
+  "metrics": [
+    { "label": "Manual regression per release", "before": 16, "after": 3, "unit": "hours", "better": "lower" },
+    { "label": "Critical paths automated", "before": 4, "after": 27, "unit": "", "better": "higher" },
+    { "label": "Tests written by developers", "before": 0, "after": 41, "unit": "%", "better": "higher" }
+  ],
+  "links": {
+    "unavailableReason": "The original code is proprietary. A public demo repo recreating these patterns against a public demo app is in progress and will be linked here."
+  },
+  "credits": "Placeholder: name the developers and QA partners who shaped the framework.",
+  "updated": "2026-11-12"
+}

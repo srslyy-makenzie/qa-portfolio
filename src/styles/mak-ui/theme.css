@@ -1,0 +1,265 @@
+/*
+ * @acme/tailwind: Tailwind v4 theme for the design system.
+ *
+ *   @import "tailwindcss";
+ *   @import "@acme/tailwind/theme.css";
+ *
+ * Utilities read the token CSS variables at runtime, so theme modes (.dark,
+ * [data-contrast="more"], OS preferences) switch without rebuilding CSS.
+ * Tailwind's default palette is removed: bg-blue-600 does not exist here.
+ */
+@import './variables.css';
+
+/* dark: explicit .dark, or the OS preference unless the page opted into .light */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light), :root:not(.light) *) {
+      @slot;
+    }
+  }
+}
+
+/* hc: high-contrast mode, explicit or from the OS */
+@custom-variant hc {
+  &:where([data-contrast='more'], [data-contrast='more'] *) {
+    @slot;
+  }
+
+  @media (prefers-contrast: more) {
+    &:where(:root:not([data-contrast]), :root:not([data-contrast]) *) {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  /* Drop Tailwind's palette so only semantic colors exist. */
+  --color-*: initial;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-scrim: var(--scrim);
+
+  /* Radius: base 10px, matching shadcn */
+  --radius-sm: var(--ds-radius-sm);
+  --radius-md: var(--ds-radius-md);
+  --radius-lg: var(--ds-radius-lg);
+  --radius-xl: var(--ds-radius-xl);
+  --radius-2xl: var(--ds-radius-2xl);
+  --radius-full: var(--ds-radius-full);
+
+  /* Families and weights (no light weights) */
+  --font-sans: var(--ds-font-family-sans);
+  --font-mono: var(--ds-font-family-mono);
+  --font-weight-*: initial;
+  --font-weight-normal: var(--ds-font-weight-regular);
+  --font-weight-medium: var(--ds-font-weight-medium);
+  --font-weight-semibold: var(--ds-font-weight-semibold);
+  --font-weight-bold: var(--ds-font-weight-bold);
+
+  /* Text styles: text-title-2 sets size, line-height and weight together */
+  --text-*: initial;
+  --text-display: var(--ds-text-style-display-font-size);
+  --text-display--line-height: var(--ds-text-style-display-line-height);
+  --text-display--font-weight: var(--ds-text-style-display-font-weight);
+  --text-display--letter-spacing: var(--ds-text-style-display-letter-spacing);
+  --text-title-1: var(--ds-text-style-title-1-font-size);
+  --text-title-1--line-height: var(--ds-text-style-title-1-line-height);
+  --text-title-1--font-weight: var(--ds-text-style-title-1-font-weight);
+  --text-title-1--letter-spacing: var(--ds-text-style-title-1-letter-spacing);
+  --text-title-2: var(--ds-text-style-title-2-font-size);
+  --text-title-2--line-height: var(--ds-text-style-title-2-line-height);
+  --text-title-2--font-weight: var(--ds-text-style-title-2-font-weight);
+  --text-title-2--letter-spacing: var(--ds-text-style-title-2-letter-spacing);
+  --text-title-3: var(--ds-text-style-title-3-font-size);
+  --text-title-3--line-height: var(--ds-text-style-title-3-line-height);
+  --text-title-3--font-weight: var(--ds-text-style-title-3-font-weight);
+  --text-title-3--letter-spacing: var(--ds-text-style-title-3-letter-spacing);
+  --text-headline: var(--ds-text-style-headline-font-size);
+  --text-headline--line-height: var(--ds-text-style-headline-line-height);
+  --text-headline--font-weight: var(--ds-text-style-headline-font-weight);
+  --text-headline--letter-spacing: var(--ds-text-style-headline-letter-spacing);
+  --text-body: var(--ds-text-style-body-font-size);
+  --text-body--line-height: var(--ds-text-style-body-line-height);
+  --text-body--font-weight: var(--ds-text-style-body-font-weight);
+  --text-body-sm: var(--ds-text-style-body-sm-font-size);
+  --text-body-sm--line-height: var(--ds-text-style-body-sm-line-height);
+  --text-body-sm--font-weight: var(--ds-text-style-body-sm-font-weight);
+  --text-caption: var(--ds-text-style-caption-font-size);
+  --text-caption--line-height: var(--ds-text-style-caption-line-height);
+  --text-caption--font-weight: var(--ds-text-style-caption-font-weight);
+  --text-code: var(--ds-text-style-code-font-size);
+  --text-code--line-height: var(--ds-text-style-code-line-height);
+  --text-code--font-weight: var(--ds-text-style-code-font-weight);
+
+  /* Elevation: shadow-elevation-1 ... shadow-elevation-4 */
+  --shadow-*: initial;
+  --shadow-elevation-1: var(--ds-elevation-1);
+  --shadow-elevation-2: var(--ds-elevation-2);
+  --shadow-elevation-3: var(--ds-elevation-3);
+  --shadow-elevation-4: var(--ds-elevation-4);
+
+  /* Motion easings: ease-standard, ease-enter, ease-exit */
+  --ease-*: initial;
+  --ease-standard: var(--ds-motion-easing-standard);
+  --ease-enter: var(--ds-motion-easing-enter);
+  --ease-exit: var(--ds-motion-easing-exit);
+
+  /* Control heights as spacing: h-control-md, size-control-sm, min-h-control-lg */
+  --spacing-control-sm: var(--ds-size-control-sm);
+  --spacing-control-md: var(--ds-size-control-md);
+  --spacing-control-lg: var(--ds-size-control-lg);
+
+  /* Tailwind's 0.25rem spacing base already matches the 4px scale; breakpoints match defaults. */
+}
+
+/* Motion durations by name: duration-fast, duration-base, ... */
+@utility duration-instant {
+  transition-duration: var(--ds-motion-duration-instant);
+}
+
+@utility duration-fast {
+  transition-duration: var(--ds-motion-duration-fast);
+}
+
+@utility duration-base {
+  transition-duration: var(--ds-motion-duration-base);
+}
+
+@utility duration-slow {
+  transition-duration: var(--ds-motion-duration-slow);
+}
+
+@utility duration-slower {
+  transition-duration: var(--ds-motion-duration-slower);
+}
+
+/* Named layers only: z-dropdown, z-modal, ... */
+@utility z-base {
+  z-index: var(--ds-z-base);
+}
+
+@utility z-dropdown {
+  z-index: var(--ds-z-dropdown);
+}
+
+@utility z-sticky {
+  z-index: var(--ds-z-sticky);
+}
+
+@utility z-overlay {
+  z-index: var(--ds-z-overlay);
+}
+
+@utility z-modal {
+  z-index: var(--ds-z-modal);
+}
+
+@utility z-popover {
+  z-index: var(--ds-z-popover);
+}
+
+@utility z-toast {
+  z-index: var(--ds-z-toast);
+}
+
+@utility z-tooltip {
+  z-index: var(--ds-z-tooltip);
+}
+
+/* The one focus style: 2px ring, 2px offset, on :focus-visible */
+@utility focus-ring {
+  &:focus-visible {
+    outline: var(--ds-focus-ring-width) solid var(--ring);
+    outline-offset: var(--ds-focus-ring-offset);
+  }
+}
+
+/*
+ * Hit area without changing the visual size: at least 24x24 everywhere (WCAG 2.5.8),
+ * 44x44 on coarse pointers. For small controls like a 16px checkbox.
+ */
+@utility touch-target {
+  position: relative;
+
+  --ds-target: var(--ds-size-target-min);
+
+  @media (pointer: coarse) {
+    /* stylelint-disable-next-line no-invalid-position-declaration -- valid nesting inside @utility */
+    --ds-target: var(--ds-size-target-touch);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    translate: -50% -50%;
+    min-width: var(--ds-target);
+    min-height: var(--ds-target);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--ds-font-family-sans);
+    font-size: var(--ds-text-style-body-font-size);
+    line-height: var(--ds-text-style-body-line-height);
+  }
+
+  :focus-visible {
+    outline: var(--ds-focus-ring-width) solid var(--ring);
+    outline-offset: var(--ds-focus-ring-offset);
+  }
+
+  ::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

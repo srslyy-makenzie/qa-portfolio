@@ -1,0 +1,97 @@
+## Quality problem
+
+The product's UI suite was owned by QA alone. Tests were recorded scripts with CSS selectors and shared logins, so any markup change broke a dozen of them, and developers treated a red run as "QA's problem." Regression before each release fell back to two days of manual checks, which set the release cadence.
+
+<Callout title="Business impact">Releases slipped to every three weeks because regression couldn't run in less than two days, and two checkout defects escaped to production in one quarter.</Callout>
+
+## Strategy
+
+The goal wasn't more UI tests. It was a suite developers would trust and extend, with each check at the cheapest layer that could catch the risk.
+
+<Decisions
+  caption="What I automated, at which layer, and what stayed manual"
+  rows={[
+    { area: "Pricing and permissions rules", layer: "API", decision: "Automated", why: "Dozens of combinations; fast and stable through the API, no browser needed." },
+    { area: "Checkout and sign-up journeys", layer: "UI (E2E)", decision: "Automated", why: "Highest revenue risk; one happy path plus key failures per journey." },
+    { area: "Test data setup", layer: "API", decision: "Automated", why: "Seeding through the UI made every test slow and order-dependent." },
+    { area: "New onboarding flow", layer: "Exploratory", decision: "Manual for now", why: "Still changing weekly; automating it early would buy maintenance, not confidence." },
+    { area: "Visual polish", layer: "Exploratory", decision: "Manual", why: "Reviewed in design QA; screenshots of moving designs would be noise." }
+  ]}
+/>
+
+## Implementation
+
+Three patterns made the framework something other engineers could pick up: fixtures that hand each test a ready-made state, factories that seed data through the API, and page objects that only expose user-level actions with role-based locators.
+
+<CodeTabs label="Framework patterns">
+<CodeTab label="Fixture">
+
+```ts title="fixtures/account.ts"
+import { test as base } from '@playwright/test'
+import { createAccount, type Account } from '../factories/account'
+
+// Each test gets its own account, seeded through the API and signed in by storage state.
+// No shared logins, so tests run in parallel and in any order.
+export const test = base.extend<{ account: Account }>({
+  account: async ({ request, context }, use) => {
+    const account = await createAccount(request, { plan: 'pro' }) // [!code highlight]
+    await context.addCookies(account.sessionCookies)
+    await use(account)
+    await account.cleanup()
+  },
+})
+```
+
+</CodeTab>
+<CodeTab label="Page object">
+
+```ts title="pages/checkout.ts"
+import type { Page } from '@playwright/test'
+
+// Page objects expose what a user does, not how the DOM is built.
+// Role-based locators survive markup refactors that broke the old CSS selectors.
+export class Checkout {
+  constructor(private page: Page) {}
+
+  async payWithCard(card: { number: string; expiry: string; cvc: string }) {
+    const form = this.page.getByRole('form', { name: 'Payment' })
+    await form.getByLabel('Card number').fill(card.number) // [!code highlight]
+    await form.getByLabel('Expiry').fill(card.expiry)
+    await form.getByLabel('CVC').fill(card.cvc)
+    await form.getByRole('button', { name: 'Pay now' }).click()
+  }
+}
+```
+
+</CodeTab>
+<CodeTab label="Test">
+
+```ts title="tests/checkout.spec.ts"
+import { expect } from '@playwright/test'
+import { test } from '../fixtures/account'
+import { Checkout } from '../pages/checkout'
+
+test('a pro account can upgrade seats', async ({ page, account }) => {
+  await page.goto(`/billing/${account.id}`)
+  await new Checkout(page).payWithCard(testCards.visa)
+  await expect(page.getByRole('status')).toHaveText('Payment received')
+})
+```
+
+</CodeTab>
+</CodeTabs>
+
+The CI pipeline ran API tests on every push and the UI suite sharded across four runners on every pull request, with traces, screenshots and video kept on failure so the developer who broke a test could see why from the PR.
+
+<Pipeline
+  steps={[
+    { title: "Lint + types", description: "ESLint, tsc" },
+    { title: "API tests", description: "~2 min" },
+    { title: "UI tests", description: "4 shards, ~6 min" },
+    { title: "Report", description: "HTML report + traces" }
+  ]}
+/>
+
+## Reflection
+
+Adoption came from the review process, not the code: once a PR template asked "which test covers this?", developers started reaching for the fixtures themselves. Next time I'd write the contributor guide before the third page object, not after the tenth.

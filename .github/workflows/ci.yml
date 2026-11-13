@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CI: true
+
+jobs:
+  quality-gates:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # 1. Static checks (lint includes mak UI's no-raw-values rule).
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: mkdir -p test-results && echo '{"lint":true,"typecheck":true}' > test-results/static.json
+
+      # 2. Unit + component tests with coverage.
+      - run: pnpm test:coverage
+
+      # 3. Build (repo cards fetched at build time; resume PDF rendered after export).
+      - run: pnpm fetch:repos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Browsers first: the build's postbuild step renders resume.pdf with Chromium.
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm build
+
+      # 4. E2E (Chromium, Firefox, WebKit, mobile), axe in 4 themes, visual regression.
+      - run: pnpm test:all
+
+      # 5. Lighthouse budgets and links.
+      - run: pnpm lhci
+      - run: pnpm check:links
+
+      # Record results and rebuild so the Quality page shows this run, with reports attached.
+      - name: Publish results to the Quality page
+        if: ${{ !cancelled() }}
+        run: pnpm quality:collect && pnpm build
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: reports
+          path: |
+            playwright-report/
+            coverage/
+            .lighthouseci/
+            test-results/
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: site
+          path: out/
+          retention-days: 7
+
+  deploy:
+    name: Deploy
+    needs: quality-gates
+    runs-on: ubuntu-latest
+    # Main deploys to production; pull requests from this repo get a preview version.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    env:
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - name: Skip until Cloudflare secrets are set
+        if: env.HAS_CLOUDFLARE != 'true'
+        run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID not set; skipping deploy."
+      - uses: actions/checkout@v4
+        if: env.HAS_CLOUDFLARE == 'true'
+      - uses: actions/download-artifact@v4
+        if: env.HAS_CLOUDFLARE == 'true'
+        with:
+          name: site
+          path: out
+      - uses: cloudflare/wrangler-action@v3
+        if: env.HAS_CLOUDFLARE == 'true'
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: ${{ github.event_name == 'push' && 'deploy' || 'versions upload' }}

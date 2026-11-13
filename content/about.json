@@ -1,0 +1,19 @@
+{
+  "intro": "I started in manual QA, where I learned that the most valuable test is the one that finds the risk nobody wrote a ticket for. Automation came next, because the same regression checks kept eating the time I needed for that kind of testing.",
+  "philosophy": [
+    { "title": "Test the risk, not the feature list.", "body": "I start from what would hurt users or the business if it broke, then decide the cheapest layer that can catch it: a unit test, an API check, or one end-to-end path." },
+    { "title": "Decide what not to automate.", "body": "Visual polish, new flows that are still changing, and one-off investigations stay exploratory. Automating them early buys maintenance cost, not confidence." },
+    { "title": "A flaky test is a bug.", "body": "If the team learns to rerun failures, the suite stops being a gate. I quarantine, find the root cause and fix it, and track the flaky rate like any other quality metric." },
+    { "title": "Make failures easy to debug.", "body": "Every failure should come with a trace, a screenshot and a clear assertion message, so the developer who sees it can act without asking me." }
+  ],
+  "narrative": [
+    { "heading": "Manual QA", "body": "Placeholder: where you started, the products you tested, and the habits manual testing gave you (risk thinking, bug reports developers trust)." },
+    { "heading": "First automation", "body": "Placeholder: the first suite you wrote, what went wrong with it, and what that taught you about test design." },
+    { "heading": "Owning quality", "body": "Placeholder: when you moved from executing tickets to shaping test strategy: acceptance criteria, testability reviews, CI gates." }
+  ],
+  "workingWith": [
+    { "question": "How do you work with developers?", "answer": "I join refinement to write acceptance criteria with them, ask for test hooks (stable roles and test IDs) while the UI is being built, and pair on fixing flaky tests instead of filing them." },
+    { "question": "How do you work with product?", "answer": "I turn the riskiest assumptions in a spec into test charters before build starts, and report quality in terms product cares about: escaped defects, release confidence, time to ship." },
+    { "question": "What does a good test report look like?", "answer": "One screen that says what failed, where, and why, with a trace attached. If someone has to rerun the suite locally to understand a failure, the report has failed." }
+  ]
+}

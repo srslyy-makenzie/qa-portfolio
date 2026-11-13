@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+.wrangler/
+*.tsbuildinfo
+.DS_Store
+.env*
+# Playwright screenshots on failure; the reference screenshots in tests/e2e/__screenshots__ are committed.

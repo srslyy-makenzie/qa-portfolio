@@ -1,0 +1,142 @@
+{
+  "generatedAt": "2026-11-13T01:31:56.703Z",
+  "commit": null,
+  "branch": null,
+  "runUrl": null,
+  "source": "local",
+  "suites": [
+    {
+      "id": "static",
+      "name": "Lint + type check",
+      "layer": "static",
+      "tool": "ESLint, TypeScript",
+      "status": "passed",
+      "counts": {
+        "passed": 2,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "durationMs": 0
+    },
+    {
+      "id": "unit",
+      "name": "Unit & component",
+      "layer": "unit",
+      "tool": "Vitest + Testing Library",
+      "status": "passed",
+      "counts": {
+        "passed": 99,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "durationMs": 1019.641357421875
+    },
+    {
+      "id": "chromium",
+      "name": "E2E · Chromium",
+      "layer": "e2e",
+      "tool": "Playwright",
+      "status": "passed",
+      "counts": {
+        "passed": 23,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 1
+      },
+      "durationMs": 7708
+    },
+    {
+      "id": "firefox",
+      "name": "E2E · Firefox",
+      "layer": "e2e",
+      "tool": "Playwright",
+      "status": "not-run",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "durationMs": 0
+    },
+    {
+      "id": "webkit",
+      "name": "E2E · WebKit",
+      "layer": "e2e",
+      "tool": "Playwright",
+      "status": "passed",
+      "counts": {
+        "passed": 21,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 3
+      },
+      "durationMs": 11685
+    },
+    {
+      "id": "mobile",
+      "name": "E2E · Mobile (Pixel 7)",
+      "layer": "e2e",
+      "tool": "Playwright",
+      "status": "passed",
+      "counts": {
+        "passed": 21,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 3
+      },
+      "durationMs": 14544
+    },
+    {
+      "id": "a11y",
+      "name": "Accessibility · 4 themes",
+      "layer": "a11y",
+      "tool": "@axe-core/playwright",
+      "status": "passed",
+      "counts": {
+        "passed": 37,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "durationMs": 21594
+    },
+    {
+      "id": "visual",
+      "name": "Visual regression",
+      "layer": "visual",
+      "tool": "Playwright screenshots",
+      "status": "passed",
+      "counts": {
+        "passed": 4,
+        "failed": 0,
+        "flaky": 0,
+        "skipped": 0
+      },
+      "durationMs": 1614
+    }
+  ],
+  "coverage": {
+    "lines": 77.65,
+    "statements": 79.34,
+    "functions": 67.9,
+    "branches": 68.29
+  },
+  "lighthouse": {
+    "url": "3 pages",
+    "performance": 98,
+    "accessibility": 100,
+    "bestPractices": 96,
+    "seo": 100
+  },
+  "links": {
+    "checked": 334,
+    "broken": 0
+  },
+  "reports": {
+    "playwright": "/reports/playwright/",
+    "coverage": "/reports/coverage/"
+  }
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "title": "This portfolio",
+    "kind": "Repo",
+    "description": "Next.js static site with Vitest, Playwright (3 browsers + mobile), axe in four themes, visual regression, Lighthouse CI and a link checker, all as merge gates.",
+    "repo": "srslyy-makenzie/qa-portfolio",
+    "tags": ["Playwright", "Vitest", "GitHub Actions", "axe-core"]
+  },
+  {
+    "title": "mak UI design system",
+    "kind": "Repo",
+    "description": "The design system this site is built on: 41 components with axe checks on every story in four theme modes and build-time contrast checks.",
+    "href": "https://mak-ui.makenziemoore.workers.dev/",
+    "tags": ["Accessibility", "Storybook", "Design tokens"]
+  },
+  {
+    "title": "WNBA props model",
+    "kind": "Repo",
+    "description": "Python data project; a candidate for a data-validation test suite (schema and freshness checks on scraped inputs).",
+    "repo": "srslyy-makenzie/wnba-props",
+    "tags": ["Python", "Data validation"]
+  },
+  {
+    "title": "Sample test plan",
+    "kind": "Test plan",
+    "description": "Placeholder: a risk-based test plan for a checkout flow — scope, risks, layers, entry and exit criteria.",
+    "tags": ["Test strategy"]
+  },
+  {
+    "title": "Sample bug report",
+    "kind": "Bug report",
+    "description": "Placeholder: one bug report written the way you'd want to receive it — steps, expected vs. actual, evidence, impact.",
+    "tags": ["Bug advocacy"]
+  }
+]

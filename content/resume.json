@@ -1,0 +1,34 @@
+{
+  "headline": "QA Automation Engineer · Playwright · TypeScript · CI/CD",
+  "summary": "Placeholder summary: years of QA experience, the products you've tested, and the automation and quality outcomes you're proudest of. Lead with one number.",
+  "skills": [
+    { "group": "Automation", "items": ["Playwright", "TypeScript", "Vitest", "Testing Library", "REST API testing"] },
+    { "group": "CI/CD & tooling", "items": ["GitHub Actions", "Docker", "Lighthouse CI", "axe-core", "Git"] },
+    { "group": "Practice", "items": ["Test strategy", "Risk-based testing", "Exploratory testing", "WCAG 2.2 AA", "Bug advocacy"] }
+  ],
+  "experience": [
+    {
+      "title": "QA Engineer",
+      "company": "Company name (placeholder)",
+      "timeframe": "20XX – Present",
+      "bullets": [
+        "Placeholder: built a Playwright + TypeScript framework covering N critical paths; cut manual regression from X to Y hours per release.",
+        "Placeholder: reduced flaky-test rate from X% to Y% by quarantining and fixing root causes.",
+        "Placeholder: added API tests and CI quality gates that block merges on failure."
+      ]
+    },
+    {
+      "title": "QA Analyst",
+      "company": "Company name (placeholder)",
+      "timeframe": "20XX – 20XX",
+      "bullets": [
+        "Placeholder: owned manual and exploratory testing for a product area; wrote test plans and acceptance criteria with developers.",
+        "Placeholder: one quantified outcome."
+      ]
+    }
+  ],
+  "education": [
+    { "credential": "B.S. Anthropology", "school": "College of Charleston", "timeframe": "2009 – 2013" }
+  ],
+  "certifications": ["Placeholder: e.g. ISTQB Foundation Level"]
+}

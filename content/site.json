@@ -1,0 +1,20 @@
+{
+  "name": "Donovan Cadena",
+  "title": "QA Automation Engineer",
+  "altTitles": ["SDET", "Quality Engineer"],
+  "positioning": "QA engineer building Playwright and API automation that keeps releases fast and safe.",
+  "summary": "I design test strategy, build automation frameworks other engineers can extend, and wire them into CI as quality gates. This site is tested the same way: its suite, pipeline and latest results are public on the Quality page.",
+  "location": "Open to remote and hybrid roles",
+  "siteUrl": "https://qa-portfolio.makenziemoore.workers.dev",
+  "siteRepo": "https://github.com/srslyy-makenzie/qa-portfolio",
+  "links": {
+    "email": "makenziemoore@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/makenzie-moore-b840a765",
+    "github": "https://github.com/srslyy-makenzie"
+  },
+  "coreStack": [
+    { "group": "Automation", "items": ["Playwright", "TypeScript", "API testing", "Vitest"] },
+    { "group": "Quality gates", "items": ["GitHub Actions", "axe-core", "Lighthouse CI", "Visual regression"] },
+    { "group": "Practice", "items": ["Test strategy", "Risk-based testing", "Exploratory testing", "Accessibility"] }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "intro": "This site is the flagship case study: it ships with its own test suite and quality gates, and nothing merges to main unless every gate passes. The numbers below come from the reporters' own output, collected after the latest run.",
+  "layers": [
+    { "id": "static", "name": "Static checks", "tool": "ESLint (incl. mak UI token lint), TypeScript", "what": "Off-system colors, arbitrary values, a11y lint rules, type errors.", "why": "Cheapest feedback; catches whole classes of bugs before a test runs." },
+    { "id": "unit", "name": "Unit & component", "tool": "Vitest + Testing Library", "what": "Content schemas, the case-study template, metric math, theme logic, the quality-report parser.", "why": "Content is the part that changes most; a bad edit should fail in milliseconds." },
+    { "id": "e2e", "name": "End-to-end", "tool": "Playwright · Chromium, Firefox, WebKit, mobile", "what": "Navigation, case study rendering, theme switching, resume download, contact links, copy-code.", "why": "The journeys a reviewer takes, in the browsers they use." },
+    { "id": "a11y", "name": "Accessibility", "tool": "@axe-core/playwright", "what": "Every route in light, dark, high-contrast light and high-contrast dark.", "why": "WCAG 2.2 AA regressions are bugs; theme modes are where contrast breaks." },
+    { "id": "visual", "name": "Visual regression", "tool": "Playwright screenshots", "what": "Key routes × light and dark.", "why": "Catches unintended layout changes the functional tests can't see." }
+  ],
+  "notAutomated": [
+    { "area": "Screen-reader experience", "why": "axe finds roughly a third of WCAG issues. A manual VoiceOver and NVDA pass happens before launch and after big layout changes." },
+    { "area": "Writing quality", "why": "Whether a case study reads clearly to someone with no company context is a human review, done with a peer." },
+    { "area": "Exploratory passes", "why": "Short charters on new pages (narrow viewports, zoom to 200%, slow network) find what scripted tests don't look for." }
+  ],
+  "pipeline": [
+    { "title": "Lint + types", "description": "ESLint, tsc" },
+    { "title": "Unit", "description": "Vitest + coverage" },
+    { "title": "Build", "description": "Static export + resume PDF" },
+    { "title": "E2E + a11y + visual", "description": "Playwright" },
+    { "title": "Lighthouse + links", "description": "Budgets ≥ 95" },
+    { "title": "Deploy", "description": "main only" }
+  ],
+  "gates": [
+    { "gate": "Lint + design-system lint", "tool": "ESLint + acme/no-raw-values", "purpose": "Semantic tokens only: no raw colors, arbitrary values or palette classes." },
+    { "gate": "Type check", "tool": "tsc --noEmit", "purpose": "Catches type errors." },
+    { "gate": "Unit / component", "tool": "Vitest + Testing Library", "purpose": "Content parsing, components, utilities." },
+    { "gate": "End-to-end", "tool": "Playwright (3 engines + mobile)", "purpose": "Navigation, rendering, themes, downloads, contact." },
+    { "gate": "Accessibility", "tool": "@axe-core/playwright × 4 themes", "purpose": "WCAG 2.2 AA regressions." },
+    { "gate": "Visual regression", "tool": "Playwright screenshots", "purpose": "Unintended UI changes." },
+    { "gate": "Performance", "tool": "Lighthouse CI budgets", "purpose": "Scores ≥ 95 on mobile." },
+    { "gate": "Links", "tool": "Link checker on build output", "purpose": "No broken links to repos, reports or the resume." }
+  ],
+  "faq": [
+    { "question": "How do you keep the E2E suite from going flaky?", "answer": "Role-based locators and web-first assertions only (no fixed waits), a fresh browser context per test, and one retry in CI that is reported as flaky rather than passed. A flaky result fails the Quality page's status, not just the log." },
+    { "question": "Why run axe in four themes?", "answer": "Contrast bugs hide in the theme you didn't check. The design system guarantees token pairs, but page-level compositions can still break them, so every route is scanned in light, dark and both high-contrast modes." },
+    { "question": "Why are visual tests limited to a few routes?", "answer": "Screenshots across every theme and viewport get noisy fast. Key routes in light and dark catch layout regressions; the rest is covered by functional and axe checks." },
+    { "question": "Where do these numbers come from?", "answer": "scripts/collect-quality.ts reads the JSON output of Vitest, Playwright, coverage and Lighthouse CI after a run and writes content/quality/latest-run.json, which this page renders at build time. Nothing on this page is typed by hand." }
+  ]
+}

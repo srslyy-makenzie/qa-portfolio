@@ -1,0 +1,52 @@
+## Quality problem
+
+The end-to-end suite failed about one run in ten for reasons unrelated to the change under test. Engineers learned to click "re-run", so the suite stopped being a gate: real regressions were rerun until they went green by chance.
+
+## Strategy
+
+I treated flakiness as a defect class with a metric, an owner and a process, instead of a nuisance.
+
+<Decisions
+  caption="Reliability decisions and why"
+  rows={[
+    { area: "Measuring flakiness", layer: "CI data", decision: "Tracked per test", why: "A retry-pass is a flaky signal; aggregating it per test showed 12 tests caused 80% of the noise." },
+    { area: "Known-flaky tests", layer: "Process", decision: "Quarantined", why: "Moved out of the required check with an owner and a due date, so the gate stayed green and honest." },
+    { area: "Fixed waits", layer: "Test code", decision: "Removed", why: "Replaced with web-first assertions that wait for the state the user waits for." },
+    { area: "Retries", layer: "Config", decision: "Kept at 1, reported", why: "Retries stay as a safety net, but a retry-pass is reported as flaky, never as passed." }
+  ]}
+/>
+
+## Implementation
+
+Most root causes were tests asserting before the app was ready, and shared state between tests. The fixes were small and repeatable, so I documented them as patterns for the team.
+
+```ts title="Before → after: wait for the state, not the clock"
+// Before: passes on a fast machine, fails under CI load.
+await page.click('#save')
+await page.waitForTimeout(2000) // [!code --]
+expect(await page.textContent('.toast')).toBe('Saved') // [!code --]
+
+// After: a web-first assertion retries until the toast appears (or times out with a clear message).
+await page.getByRole('button', { name: 'Save' }).click()
+await expect(page.getByRole('status')).toHaveText('Saved') // [!code ++]
+```
+
+```yaml title=".github/workflows/e2e.yml (excerpt)"
+strategy:
+  fail-fast: false
+  matrix:
+    shard: [1, 2, 3, 4] # [!code highlight]
+steps:
+  - run: npx playwright test --shard=${{ matrix.shard }}/4 --reporter=blob
+  - uses: actions/upload-artifact@v4
+    if: ${{ !cancelled() }}
+    with:
+      name: blob-report-${{ matrix.shard }}
+      path: blob-report
+```
+
+<Callout title="What made it stick">The suite became a required check only after two weeks at under 1% flaky rate. Making it required earlier would have taught the team to resent it.</Callout>
+
+## Reflection
+
+The metric did more than any fix: once the flaky rate was on the team dashboard next to deploy frequency, flaky tests got picked up in standup instead of ignored. I'd add per-test flakiness tracking on day one next time instead of reconstructing it from CI logs.

@@ -1,0 +1,6 @@
+{
+  // Static assets on Cloudflare Workers (same platform as mak UI). `pnpm deploy` after a build.
+  "name": "qa-portfolio",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./out", "not_found_handling": "404-page", "html_handling": "force-trailing-slash" }
+}

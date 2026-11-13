@@ -1,0 +1,89 @@
+@import 'tailwindcss';
+@import '../src/styles/mak-ui/theme.css';
+
+@source "../components";
+
+/* Point the font tokens at the self-hosted brand faces (next/font). */
+:root {
+  --ds-font-family-sans: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  --ds-font-family-mono: var(--font-brand-mono), ui-monospace, monospace;
+}
+
+/*
+ * Syntax highlighting: Shiki's css-variables theme, mapped onto semantic tokens so code follows
+ * every theme mode. Only pairs the design system guarantees as text on `background` are used
+ * (foreground, muted-foreground, primary: 4.5:1, 7:1 in high contrast); weight and style add
+ * variety instead of extra hues. Highlighted and diff lines are marked with a border and a
+ * +/- sign, not a tinted background that would erode contrast.
+ */
+:root {
+  --shiki-foreground: var(--foreground);
+  --shiki-background: var(--background);
+  --shiki-token-constant: var(--primary);
+  --shiki-token-string: var(--foreground);
+  --shiki-token-string-expression: var(--foreground);
+  --shiki-token-comment: var(--muted-foreground);
+  --shiki-token-keyword: var(--primary);
+  --shiki-token-parameter: var(--foreground);
+  --shiki-token-function: var(--primary);
+  --shiki-token-punctuation: var(--muted-foreground);
+  --shiki-token-link: var(--primary);
+}
+
+@layer components {
+  .code-block code {
+    display: grid;
+    min-width: max-content;
+  }
+
+  .code-block .line {
+    padding-inline: calc(var(--spacing) * 4);
+    border-inline-start: calc(var(--spacing) * 1) solid transparent;
+  }
+
+  .code-block .line.highlighted {
+    border-inline-start-color: var(--primary);
+    font-weight: var(--ds-font-weight-medium);
+  }
+
+  .code-block .line.diff::before,
+  .code-block.has-diff .line:not(.diff)::before {
+    content: ' ';
+    display: inline-block;
+    width: 1ch;
+    margin-inline-end: 1ch;
+    color: var(--foreground);
+  }
+
+  .code-block .line.diff.add {
+    border-inline-start-color: var(--success);
+  }
+
+  .code-block .line.diff.add::before {
+    content: '+';
+  }
+
+  .code-block .line.diff.remove {
+    border-inline-start-color: var(--destructive);
+    text-decoration: line-through;
+  }
+
+  .code-block .line.diff.remove::before {
+    content: '-';
+  }
+}
+
+/* Print: the resume page doubles as the source of resume.pdf. */
+@media print {
+  body > header,
+  body > footer,
+  body > a[href='#main'],
+  [data-print='hide'] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}
