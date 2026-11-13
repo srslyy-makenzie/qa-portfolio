@@ -49,14 +49,20 @@ jobs:
       # 4. E2E (Chromium, Firefox, WebKit, mobile), axe in 4 themes, visual regression.
       - run: pnpm test:all
 
-      # 5. Lighthouse budgets and links.
+      # 5. Lighthouse budgets.
       - run: pnpm lhci
-      - run: pnpm check:links
 
-      # Record results and rebuild so the Quality page shows this run, with reports attached.
-      # Only when the site built: otherwise there is nothing to publish into.
+      # Rebuild with this run's results and the HTML reports copied in, so the link check also
+      # covers the report links; then record the link result and build the final site.
       - name: Publish results to the Quality page
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: pnpm quality:collect && pnpm build
+
+      # 6. Links, on the build that will be deployed.
+      - run: pnpm check:links
+        id: links
+      - name: Record link check
+        if: ${{ !cancelled() && steps.links.outcome != 'skipped' && steps.build.outcome == 'success' }}
         run: pnpm quality:collect && pnpm build
 
       - uses: actions/upload-artifact@v4
