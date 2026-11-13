@@ -44,6 +44,7 @@ jobs:
       # Browsers first: the build's postbuild step renders resume.pdf with Chromium.
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm build
+        id: build
 
       # 4. E2E (Chromium, Firefox, WebKit, mobile), axe in 4 themes, visual regression.
       - run: pnpm test:all
@@ -53,8 +54,9 @@ jobs:
       - run: pnpm check:links
 
       # Record results and rebuild so the Quality page shows this run, with reports attached.
+      # Only when the site built: otherwise there is nothing to publish into.
       - name: Publish results to the Quality page
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: pnpm quality:collect && pnpm build
 
       - uses: actions/upload-artifact@v4
